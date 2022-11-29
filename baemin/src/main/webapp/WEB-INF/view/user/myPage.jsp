@@ -34,7 +34,6 @@
 	                  	</a>
 		    		</div>
 		    		
-		    		
 		    		<div>
 		    			<a class="updating" href="/myPage/coupon" onclick="return false;">
 	               		  	<span class="img_box">
