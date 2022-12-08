@@ -5,6 +5,12 @@
 <link rel="stylesheet" href="/css/user/login.css">
 </head>
 <body>
+<c:if test="${!empty loginFailMsg }">
+    <script type="text/javascript">
+        const msg = "${loginFailMsg}";
+        swal(msg);
+    </script>
+</c:if>
 	<main>
 		<div class="login_box">
 			<a href="/"><img alt="이미지" src="/img/bamin2.png" class="bm_img"></a>
