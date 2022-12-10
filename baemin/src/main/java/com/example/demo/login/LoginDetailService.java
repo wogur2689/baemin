@@ -12,12 +12,12 @@ public class LoginDetailService implements UserDetailsService {
 
 	@Autowired
 	private SqlSession sql;
-	
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = sql.selectOne("user.login", username);
-		
-		if(user != null) {
+
+		if (user != null) {
 			LoginService loginDetail = new LoginService();
 			loginDetail.setUser(user);
 			return loginDetail;
@@ -25,5 +25,5 @@ public class LoginDetailService implements UserDetailsService {
 			throw new UsernameNotFoundException("유저없음");
 		}
 	}
-	
+
 }
