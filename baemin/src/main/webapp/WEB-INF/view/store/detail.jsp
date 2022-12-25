@@ -4,7 +4,8 @@
 
 <link rel="stylesheet" href="/css/modal.css">
 <link rel="stylesheet" href="/css/store/detail.css">
-
+<script type="text/javascript"
+	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=580ed6ceef0e0119b6f83716432542a7&libraries=services,clusterer,drawing"></script>
 
 <%@ include file="/WEB-INF/view/include/header.jsp"%>
 
