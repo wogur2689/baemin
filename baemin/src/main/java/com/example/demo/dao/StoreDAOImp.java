@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.dto.Food;
 import com.example.demo.dto.FoodOption;
+import com.example.demo.dto.Review;
 import com.example.demo.dto.Store;
 
 @Repository
@@ -36,4 +37,20 @@ public class StoreDAOImp implements StoreDAO {
 	public List<FoodOption> foodOption(int foodId) {
 		return sql.selectList("store.foodOption", foodId);
 	}
+
+	@Override
+	public void reviewWrite(Review review) {
+		sql.insert("store.reviewWrite", review);
+	}
+
+	@Override
+	public List<Review> reviewList(long id) {
+		return sql.selectOne("store.reviewList", id);
+	}
+	
+	@Override
+	public void reviewModify(Review review) {
+		sql.update("store.reviewModify", review);
+	}
+
 }

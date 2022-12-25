@@ -3,6 +3,7 @@ package com.example.demo.service;
 import java.util.List;
 
 import com.example.demo.dto.FoodOption;
+import com.example.demo.dto.Review;
 import com.example.demo.dto.Store;
 import com.example.demo.dto.StoreDetail;
 
@@ -13,4 +14,8 @@ public interface StoreService {
 	
 	//해당 메뉴의 옵션 가져오기
 	List<FoodOption> foodOption(int foodId);
+	
+	void reviewWrite(Review review);
+	
+	void reviewModify(Review review);
 }
