@@ -13,6 +13,7 @@ import com.example.demo.dto.FoodOption;
 import com.example.demo.dto.Review;
 import com.example.demo.dto.Store;
 import com.example.demo.dto.StoreDetail;
+import com.example.demo.util.Page;
 
 @Service
 public class StoreServiceImp implements StoreService {
@@ -22,11 +23,7 @@ public class StoreServiceImp implements StoreService {
 	
 	@Override
 	public List<Store> storeList(int category, int address) {
-		Map<String, Object> map = new HashMap<>();
-		map.put("category", category);
-		map.put("address1", address);
-		
-		return storeDAO.storeList(map);
+	    return storeList(category, address, "주문접수 대기 중", 1);
 	}
 	
 	@Override
@@ -56,5 +53,17 @@ public class StoreServiceImp implements StoreService {
 	public void reviewModify(Review review) {
 	    storeDAO.reviewModify(review);
 	}
-
+	 
+	@Override
+	public List<Store> storeList(int category, int address1, String sort, int page) {
+	    Page p = new Page(page, 8);
+	    Map<String, Object> map = new HashMap<>();
+	    map.put("category", category);
+	    map.put("address1", address1);
+	    map.put("firstList", p.getFirstList());
+	    map.put("lastList", p.getLastList());
+	    map.put("sort", sort);
+	    System.out.println("페이지 시작 = " + p.getFirstList() + " 페이지 끝 = " + p.getLastList());
+	    return storeDAO.storeList(map);
+	}
 }

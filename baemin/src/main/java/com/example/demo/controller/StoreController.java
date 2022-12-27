@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -87,6 +89,11 @@ public class StoreController {
 	 
 	    return "redirect:/orderList";
 	}
-
-
+	
+	@ResponseBody
+	@GetMapping("/store/storeList")
+	public ResponseEntity<List<Store>> sortStore(int category, int address1, String sort, int page,  Model model) {
+	    List<Store> storeList = storeService.storeList(category, address1 / 100, sort, page);
+	    return new ResponseEntity<>(storeList, HttpStatus.OK);
+	}
 }

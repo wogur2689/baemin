@@ -4,7 +4,7 @@
 <%@ taglib prefix="fm" uri="http://java.sun.com/jsp/jstl/fmt" %>
     
 <li>
-		<%-- <a href="${store_admin }/detail/${storeList.id }"> --%>
+		<a href="${store_admin }/detail/${storeList.id }">
 		
 		<div class="img_box">
 			<a href="${store_admin }/detail/${storeList.id }"><img src="${storeList.storeImg }" alt="이미지"></a>

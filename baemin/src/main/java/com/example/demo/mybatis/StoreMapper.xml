@@ -115,4 +115,64 @@
 	        ORDER_NUM = ${orderNum }    
 	</update>
 	
+	<select id="storeList" resultType="Store">
+		WITH R_COUNT AS (
+		    SELECT STORE_ID
+	                ,ROUND(AVG(SCORE), 1) SCORE
+	                ,COUNT(REVIEW_CONTENT) REVIEW_COUNT
+	                ,COUNT(BOSS_COMMENT) BOSS_COMMENT_COUNT 
+	        FROM    BM_REVIEW 
+	        GROUP BY STORE_ID
+		),
+		STORE AS (
+		    SELECT  S.*,
+		            T.*, 
+		            CASE WHEN MOD(24 - S.OPENING_TIME + S.CLOSING_TIME, 24) != 0 THEN MOD(24 - S.OPENING_TIME + S.CLOSING_TIME, 24) ELSE 24 END BS_TIME
+		            
+		    FROM        BM_STORE S
+		    LEFT JOIN   R_COUNT T
+		    ON          S.ID = T.STORE_ID     
+		    WHERE       CATEGORY = #{category} 
+		    AND         STORE_ADDRESS1 LIKE '${address1}%'
+		    
+		    <if test="sort == '배달 빠른 순'">
+				ORDER BY DELEVERY_TIME
+			</if>
+			
+			<if test="sort == '배달팁 낮은 순'">
+				ORDER BY DELEVERY_TIP
+			</if>
+			
+			<if test="sort == '별점 높은 순'">
+				ORDER BY SCORE
+			</if>
+			
+			<if test="sort == '리뷰 많은 순'">
+				ORDER BY REVIEW_COUNT
+			</if>
+			
+			<if test="sort == '최소 주문 금액 순'">
+				ORDER BY MIN_DELEVERY
+			</if> 
+		)
+		SELECT * FROM 
+		    (SELECT ROWNUM RN, 
+		            RESULT.* 
+		    FROM   
+		            (SELECT C.* 
+		                    ,'true' IS_OPEN 
+		            FROM    STORE C  
+		            WHERE   TO_CHAR(SYSTIMESTAMP, 'HH24') BETWEEN OPENING_TIME AND OPENING_TIME + BS_TIME
+		            
+		            UNION ALL
+			         
+		            SELECT C.*
+		                   ,'false' IS_OPEN 
+		            FROM   STORE C  
+		            WHERE  TO_CHAR(SYSTIMESTAMP, 'HH24') NOT BETWEEN OPENING_TIME AND OPENING_TIME + BS_TIME 
+			        ) RESULT
+			 ) 
+		WHERE RN BETWEEN #{firstList } AND ${lastList }
+	</select>
+	
 </mapper>
