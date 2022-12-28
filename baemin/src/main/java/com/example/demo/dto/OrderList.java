@@ -33,4 +33,5 @@ public class OrderList {
 	private String reviewContent;
 	private int score;
     private String reviewImg;
+    private int listCount; // 목록 총 갯수
 }

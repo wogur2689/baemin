@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -16,6 +18,7 @@ import com.example.demo.dto.OrderDetail;
 import com.example.demo.dto.OrderInfo;
 import com.example.demo.dto.OrderList;
 import com.example.demo.login.LoginService;
+import com.example.demo.util.Page;
 import com.example.demo.util.UserInfoSessionUpdate;
 import com.google.gson.Gson;
 
@@ -101,7 +104,16 @@ public class OrderServiceImp implements OrderService{
 	}
 	
 	@Override
-	public List<OrderList> orderList(long userId) {
-		return orderDAO.orderList(userId);
+	public List<OrderList> orderList(long userId, Page p) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("userId", userId);
+		map.put("firstList", p.getFirstList());
+		map.put("lastList", p.getLastList());
+		
+		System.out.println("첫번째 목록 = " + p.getFirstList() + " 마지막 목록 = " + p.getLastList());
+		System.out.println("첫번째 = " + p.getFirstPage() + " 마지막 = " + p.getLastPage() );
+		System.out.println("이전페이지 = " + p.getPrevPage());
+		System.out.println("다음페이지 = " + p.getNextPage());
+		return orderDAO.orderList(map);
 	}
 }

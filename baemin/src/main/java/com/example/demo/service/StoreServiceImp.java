@@ -59,7 +59,7 @@ public class StoreServiceImp implements StoreService {
 	    Page p = new Page(page, 8);
 	    Map<String, Object> map = new HashMap<>();
 	    map.put("category", category);
-	    map.put("address1", address1);
+	    map.put("address1", address1); 
 	    map.put("firstList", p.getFirstList());
 	    map.put("lastList", p.getLastList());
 	    map.put("sort", sort);

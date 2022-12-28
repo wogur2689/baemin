@@ -91,6 +91,7 @@
         	
             </ul>
         </div>
+        <%@ include file="/WEB-INF/view/include/pageBox.jsp" %>
     </main>
     </c:if>
 </div>

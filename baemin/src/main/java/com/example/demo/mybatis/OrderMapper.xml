@@ -134,6 +134,7 @@
 			ORDER BY	o.order_date desc  
 	        ) O
 		) 
+		WHERE R BETWEEN #{firstList } AND #{lastList }
 	</select>
 	
 	

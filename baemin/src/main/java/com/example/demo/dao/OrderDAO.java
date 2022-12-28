@@ -1,6 +1,7 @@
 package com.example.demo.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.example.demo.dto.Cart;
 import com.example.demo.dto.OrderDetail;
@@ -25,5 +26,5 @@ public interface OrderDAO {
 	void orderDetail(OrderDetail[] detail, long userId);
 	
 	//주문 목록
-	List<OrderList> orderList(long userId);
+	List<OrderList> orderList(Map<String, Object> map);
 }

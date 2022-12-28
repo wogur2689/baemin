@@ -13,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -24,6 +25,7 @@ import com.example.demo.login.LoginService;
 import com.example.demo.service.OrderService;
 import com.example.demo.util.CreateOrderNum;
 import com.example.demo.util.FoodInfoFromJson;
+import com.example.demo.util.Page;
 
 @Controller
 public class OrderController {
@@ -84,15 +86,17 @@ public class OrderController {
 	 * @param model
 	 * @return
 	 */
-	@GetMapping("/orderList")
-	public String orderList(@AuthenticationPrincipal LoginService user, Model model) {
-	    if (user == null) {
+	@GetMapping({"/orderList", "/orderList/{page}"})
+	public String orderList(@AuthenticationPrincipal LoginService user, Model model, 
+			@PathVariable(required = false) Integer page) {
+		if (user == null) {
 	        System.out.println("비로그인");
 	    } else {
 	        System.out.println("로그인");
 	        long userId = user.getUser().getId();
 	 
-	        List<OrderList> orderList = orderService.orderList(userId);
+	        Page p = new Page(page);
+	        List<OrderList> orderList = orderService.orderList(userId, p);
 	 
 	        if (orderList.size() == 0) {
 	            return "order/orderList";
@@ -104,6 +108,8 @@ public class OrderController {
 	            cartList.add(FoodInfoFromJson.foodInfoFromJson(orderList.get(i).getFoodInfo()));
 	        }
 	        
+	        p.totalPage(orderList.get(0).getListCount());
+	        model.addAttribute("page", p);
 	        model.addAttribute("user", user.getUser());
 	        model.addAttribute("cartList", cartList);
 	        model.addAttribute("orderList", orderList);
