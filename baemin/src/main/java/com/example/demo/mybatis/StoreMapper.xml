@@ -10,29 +10,34 @@
 	
 	<select id="storeDetail" resultType="Store">
 	SELECT	RESULT.*
-	        ,CASE WHEN TO_CHAR(SYSDATE,'HH24') BETWEEN OPENING_TIME AND OPENING_TIME + BS_TIME THEN 'true' ELSE 'false' END IS_OPEN
+			,L.IS_LIKES
+			,CASE WHEN TO_CHAR(SYSDATE,'HH24') BETWEEN OPENING_TIME AND OPENING_TIME + BS_TIME THEN 'true' ELSE 'false' END IS_OPEN
 	FROM	(SELECT S.*,
-	                C.*,
-	                CASE WHEN MOD(24 - S.OPENING_TIME + S.CLOSING_TIME, 24) != 0 THEN MOD(24 - S.OPENING_TIME + S.CLOSING_TIME, 24) ELSE 24 END BS_TIME
-	        FROM 	BM_STORE S
-	                ,(SELECT * FROM  
-	                        (SELECT	ROUND(AVG(SCORE),1) SCORE
-	                        ,COUNT(REVIEW_CONTENT) REVIEW_COUNT
-	                        ,COUNT(BOSS_COMMENT) BOSS_COMMENT_COUNT
-	                        ,COUNT(CASE WHEN SCORE=1 THEN 1 END) SCORE1
-	                        ,COUNT(CASE WHEN SCORE=2 THEN 1 END) SCORE2
-	                        ,COUNT(CASE WHEN SCORE=3 THEN 1 END) SCORE3
-	                        ,COUNT(CASE WHEN SCORE=4 THEN 1 END) SCORE4
-	                        ,COUNT(CASE WHEN SCORE=5 THEN 1 END) SCORE5
-	                FROM 	BM_REVIEW WHERE STORE_ID = #{id } ) 
-	                ,(SELECT SUM(ORDER_COUNT) ORDER_COUNT FROM (
-	                    SELECT COUNT(*) ORDER_COUNT FROM BM_ORDER_USER WHERE STORE_ID = #{id }
+	    			C.*,
+	    			CASE WHEN MOD(24 - S.OPENING_TIME + S.CLOSING_TIME, 24) != 0 THEN MOD(24 - S.OPENING_TIME + S.CLOSING_TIME, 24) ELSE 24 END BS_TIME
+	    	FROM 	BM_STORE S
+		        	,(SELECT * FROM  
+			            	(SELECT	ROUND(AVG(SCORE),1) SCORE
+			                ,COUNT(REVIEW_CONTENT) REVIEW_COUNT
+			                ,COUNT(BOSS_COMMENT) BOSS_COMMENT_COUNT
+			                ,COUNT(CASE WHEN SCORE=1 THEN 1 END) SCORE1
+			                ,COUNT(CASE WHEN SCORE=2 THEN 1 END) SCORE2
+			                ,COUNT(CASE WHEN SCORE=3 THEN 1 END) SCORE3
+			                ,COUNT(CASE WHEN SCORE=4 THEN 1 END) SCORE4
+			                ,COUNT(CASE WHEN SCORE=5 THEN 1 END) SCORE5
+	            	FROM 	BM_REVIEW WHERE STORE_ID = #{storeId } ) 
+	            	,(SELECT COUNT(*) LIKES_COUNT FROM BM_LIKES WHERE STORE_ID = #{storeId } )
+		            ,(SELECT SUM(ORDER_COUNT) ORDER_COUNT FROM (
+	                    SELECT COUNT(*) ORDER_COUNT FROM BM_ORDER_USER WHERE STORE_ID = #{storeId }
 	                        UNION ALL
-	                    SELECT COUNT(*) ORDER_COUNT FROM BM_ORDER_NON_USER WHERE STORE_ID = #{id } ))
-	                ) C
-	        WHERE 	ID = #{id }
-	        ) RESULT
+	                    SELECT COUNT(*) ORDER_COUNT FROM BM_ORDER_NON_USER WHERE STORE_ID = #{storeId } ))
+	        		) C
+	        WHERE 	ID = #{storeId }
+	    	) RESULT
+	LEFT JOIN   (SELECT STORE_ID, 1 IS_LIKES FROM BM_LIKES WHERE EXISTS(SELECT 1 FROM BM_LIKES WHERE USER_ID = #{userId } AND  STORE_ID = #{storeId } )) L
+    ON          RESULT.ID = L.STORE_ID    	
 	</select>
+
 
 	<select id="foodList" resultType="Food">
 		SELECT
@@ -174,5 +179,22 @@
 			 ) 
 		WHERE RN BETWEEN #{firstList } AND ${lastList }
 	</select>
+	
+	<insert id="addLikes">
+	    INSERT INTO BM_LIKES (
+	        USER_ID
+	        ,STORE_ID
+	    ) VALUES (
+	        #{userId }
+	        ,#{storeId }
+	    )
+	</insert>
+	 
+	<delete id="deleteLikes">
+	    DELETE BM_LIKES  WHERE 
+	    USER_ID = #{userId } AND
+	    STORE_ID = #{storeId }			
+	</delete>
+		
 	
 </mapper>

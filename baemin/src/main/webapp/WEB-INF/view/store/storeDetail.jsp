@@ -6,10 +6,10 @@
     <nav>
     	<c:set var="info" value="${store.storeInfo }" />
         <h1 id="store_name" data-store_name="${info.storeName }" >${info.storeName }</h1>
-        <%-- <div id="is_open" data-is_open="${store.storeInfo.isOpen }"></div> --%>
+        <div id="is_open" data-is_open="${store.storeInfo.isOpen }"></div>
 		<div class="inf">
 			<div>
-				<%-- 
+				
 				<span class="score_box">
              		<c:forEach begin="0" end="4" var="i">
              			<c:choose>
@@ -25,12 +25,19 @@
                   	<span class="store_score" data-score="${info.score }">${info.score }</span>
                   	
 				</span><br>
-                 --%>
                    
-           		<span><i class="fas fa-heart" ></i> 찜 </span>
-                   	
-                    
-                <span class="likes_count" data-count=0 >0</span>
+           		<c:choose>
+				    <c:when test="${info.isLikes == 1 }">
+				        <span><i class="fas fa-heart" ></i> 찜 </span>
+				    </c:when>
+				    
+				    <c:otherwise>
+				        <span><i class="far fa-heart" ></i> 찜 </span>
+				    </c:otherwise>
+				</c:choose>  	
+				    
+				<span class="likes_count" data-count=${info.likesCount } >${info.likesCount }</span>
+
                   
 			</div>
                	<div>
@@ -64,7 +71,6 @@
             
             <div class="cart_list">
 	            <ul>
-	            	<!-- 
 					<li>
 						<h3>메뉴</h3>
   							<div>가격</div>
@@ -73,7 +79,6 @@
   							<div>합계 : 0원</div>
   							<button class="cancle_btn"> ｘ </button> 
 		            </li>
-  							-->
 	            </ul>
             </div>
             

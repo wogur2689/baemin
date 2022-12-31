@@ -10,7 +10,7 @@ import com.example.demo.dto.StoreDetail;
 public interface StoreService {
 	List<Store> storeList(int category, int address);
 	
-	StoreDetail storeDetail(long id);
+	StoreDetail storeDetail(long id, long userId);
 	
 	//해당 메뉴의 옵션 가져오기
 	List<FoodOption> foodOption(int foodId);
@@ -20,4 +20,7 @@ public interface StoreService {
 	void reviewModify(Review review);
 	
 	List<Store> storeList(int category, int address, String sort, int page);
+	
+	// 찜
+	void likes(long storeId, String likes, long userId);
 }

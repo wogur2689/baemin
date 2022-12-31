@@ -27,16 +27,12 @@ public class StoreServiceImp implements StoreService {
 	}
 	
 	@Override
-	public StoreDetail storeDetail(long storeId) {
-		Store storeInfo = storeDAO.storeDetail(storeId);
-		List<Food> foodList = storeDAO.foodList(storeId);
-		List<Review> reviewList = storeDAO.reviewList(storeId);
-		
-		System.out.println("가게 정보 = " + storeInfo);
-		System.out.println("메뉴목록 = " + foodList);
-		System.out.println("댓글목록 = " + reviewList);
-		
-		return new StoreDetail(storeInfo, foodList, reviewList);
+	public StoreDetail storeDetail(long storeId, long userId) {
+	    Store storeInfo = storeDAO.storeDetail(storeId, userId); 
+	    List<Food> foodList = storeDAO.foodList(storeId);
+	    List<Review> reviewList = storeDAO.reviewList(storeId);
+	     
+	    return new StoreDetail(storeInfo, foodList, reviewList);
 	}
 
 	@Override
@@ -65,5 +61,19 @@ public class StoreServiceImp implements StoreService {
 	    map.put("sort", sort);
 	    System.out.println("페이지 시작 = " + p.getFirstList() + " 페이지 끝 = " + p.getLastList());
 	    return storeDAO.storeList(map);
+	}
+	
+	@Override
+	public void likes(long storeId, String likes, long userId) {
+	    Map<String, Long> map = new HashMap<>();
+	    map.put("storeId", storeId);
+	    map.put("userId", userId);
+	    
+	    if(likes.equals("on")) {
+	        storeDAO.addLikes(map);
+	    } else {
+	        storeDAO.deleteLikes(map);
+	    }
+	    
 	}
 }
