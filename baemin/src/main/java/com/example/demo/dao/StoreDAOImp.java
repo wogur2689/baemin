@@ -66,4 +66,14 @@ public class StoreDAOImp implements StoreDAO {
 	public void deleteLikes(Map<String, Long> map) {
 	    sql.insert("store.deleteLikes", map);
 	}
+	
+	@Override
+	public List<Store> likesList(long userId) {
+		return sql.selectList("store.likesList", userId);
+	}
+	
+	@Override
+	public List<Store> likesListNonUser(String likes) {
+	    return sql.selectList("store.likesListNonUser", likes);
+	}
 }

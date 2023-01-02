@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +27,7 @@ import com.example.demo.dto.Store;
 import com.example.demo.dto.StoreDetail;
 import com.example.demo.login.LoginService;
 import com.example.demo.service.StoreService;
+import com.example.demo.util.CookieManager;
 import com.example.demo.util.UploadFile;
 
 @Controller
@@ -47,15 +50,25 @@ public class StoreController {
 	}
 	
 	@GetMapping("/store/detail/{id}")
-	public String storeDetail(@PathVariable long id, Model model, @AuthenticationPrincipal LoginService user) {
-	    long userId = 0;
-	    if(user != null) {
-	        userId = user.getUser().getId();
-	    }
-	    
-	    StoreDetail storeDetail = storeService.storeDetail(id, userId);
-	    model.addAttribute("store", storeDetail);
-	    return "store/detail";
+	public String storeDetail(@PathVariable long id, Model model, @AuthenticationPrincipal LoginService user) throws Exception {
+		long userId = 0;
+		if(user != null) {
+			userId = user.getUser().getId();
+		} else {
+			CookieManager cm = new CookieManager();
+			String likesList  = cm.findCookie("LIKES_LIST");
+			if(likesList == null ) {
+				model.addAttribute("isLikes", false);
+			} else {
+				String[] arr = likesList.split(", ");
+				boolean isLikes = Arrays.asList(arr).contains(id+"");
+				model.addAttribute("isLikes", isLikes);
+			}
+		}
+		
+		StoreDetail storeDetail = storeService.storeDetail(id, userId);
+		model.addAttribute("store", storeDetail);
+		return "store/detail";
 	}
 	
 	@ResponseBody
@@ -122,5 +135,26 @@ public class StoreController {
 	    }
 	 
 	    return userId;
+	}
+	
+	// 찜한 가게 목록
+	@GetMapping("/likes/store")
+	public String likes(Model model, @AuthenticationPrincipal LoginService user) throws Exception {
+	    long userId = 0;
+	    List<Store> likesList = new ArrayList<>();
+	    if (user == null) {
+	        CookieManager cm = new CookieManager();
+	        String likes = cm.findCookie("LIKES_LIST");
+	        
+	        if(likes != null && !"".equals(likes)) {
+	            likesList = storeService.likesListNonUser(likes);
+	        }
+	        
+	    } else {
+	        userId = user.getUser().getId();
+	        likesList = storeService.likesList(userId);
+	    }
+	    model.addAttribute("likesList", likesList);
+	    return "/store/likes";
 	}
 }
