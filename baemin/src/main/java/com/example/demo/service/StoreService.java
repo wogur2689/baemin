@@ -6,6 +6,7 @@ import com.example.demo.dto.FoodOption;
 import com.example.demo.dto.Review;
 import com.example.demo.dto.Store;
 import com.example.demo.dto.StoreDetail;
+import com.example.demo.util.Page;
 
 public interface StoreService {
 	List<Store> storeList(int category, int address);
@@ -29,4 +30,6 @@ public interface StoreService {
 	
 	// 찜한 가게들(비회원)
 	List<Store> likesListNonUser(String likes);
+	
+	List<Store> storeSearch(String keyword, int address, Page p);
 }

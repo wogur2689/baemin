@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,7 @@ import com.example.demo.dto.StoreDetail;
 import com.example.demo.login.LoginService;
 import com.example.demo.service.StoreService;
 import com.example.demo.util.CookieManager;
+import com.example.demo.util.Page;
 import com.example.demo.util.UploadFile;
 
 @Controller
@@ -157,4 +159,37 @@ public class StoreController {
 	    model.addAttribute("likesList", likesList);
 	    return "/store/likes";
 	}
+	
+	@GetMapping({"/store/search", "/store/search/{page}"})
+	public String search(Integer address1, String keyword, @PathVariable(required = false) Integer page, Model model) throws Exception {
+	 
+	    CookieManager cm = new CookieManager();
+	    if(keyword != null) {
+	        LinkedHashSet<String> keywordList = cm.saveKeyword(keyword);
+	        model.addAttribute("keywordList", keywordList);
+	        
+	        Page p = new Page(page);
+	        List<Store> storeList = storeService.storeSearch(keyword, address1 / 100, p);
+	        model.addAttribute("keyword", keyword);
+	        
+	        if(storeList.size() == 0) {
+	            model.addAttribute("noSearch", true);
+	        } else {
+	            p.totalPage(storeList.get(0).getListCount());
+	            model.addAttribute("page", p);
+	            model.addAttribute("storeList", storeList);
+	        }
+	    } else {
+	        String key = cm.findCookie("KEYWORD");
+	        if(key != null) {
+	            String[] keywordList = key.split(", ");
+	            model.addAttribute("keywordList", keywordList);
+	        }
+	    }
+	 
+	    return "store/search";
+	}
+
+
+
 }
